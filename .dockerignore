@@ -1,0 +1,9 @@
+.venv
+.git
+.env
+.vscode
+__pycache__
+*.pyc
+*.egg-info
+test
+docs
