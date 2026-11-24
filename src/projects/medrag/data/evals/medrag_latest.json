@@ -1,0 +1,162 @@
+{
+  "summary": {
+    "project": "medrag",
+    "collection_name": "medrag_collection_bge_small",
+    "started_at": "2026-11-24T09:37:21.455119Z",
+    "completed_at": "2026-11-24T09:38:01.877254Z",
+    "duration_seconds": 40.42,
+    "dataset_size": 3,
+    "passed_cases": 0,
+    "failed_cases": 3,
+    "success_rate": 0.0,
+    "success": false
+  },
+  "cases": [
+    {
+      "id": "med_001",
+      "query": "What is a common first-line medication approach for type 2 diabetes?",
+      "expected_answer": "Clinical guidelines commonly describe metformin as a standard first-line therapy for type 2 diabetes, depending on patient-specific factors.",
+      "actual_answer": "Metformin is the common first-line medication for type 2 diabetes, typically started alongside lifestyle modification and glycemic monitoring when there are no contraindications. Bootstrap guideline summaries note that treatment is often individualized afterward, with escalation to GLP-1 receptor agonists, SGLT2 inhibitors, or insulin depending on comorbidities, kidney function, cardiovascular risk, and glycemic control. A PubMed-indexed guideline review (Diabetes, Obesity & Metabolism, 2024; PMID 38992869) similarly describes metformin as foundation therapy recommended by most national, regional, and international guidelines, while also noting debate about its first-line role in some guidelines.\n\nThis is general guideline information rather than individualized medical advice; specific treatment decisions should be made with a qualified clinician.",
+      "sources": [
+        "Bootstrap: bootstrap_seed",
+        "PubMed: Current type 2 diabetes guidelines: Individualized treatment and how to make the most of metformin.",
+        "PubMed: Making treatment guideline recommendations in chronic kidney disease and type 2 diabetes more accessible to primary care providers in the United States.",
+        "PubMed: Realigning diabetes regimens in older adults: a 4S Pathway to guide simplification and deprescribing strategies.",
+        "WHO: WHO_BP.pdf (page 38)",
+        "WHO: WHO_BP.pdf (page 39)",
+        "PubMed: Type 2 Diabetes Mellitus and Heart Failure: A Scientific Statement From the American Heart Association and the Heart Failure Society of America: This statement does not represent an update of the 2017 ACC/AHA/HFSA heart failure guideline update."
+      ],
+      "retrieval_context": [
+        "Type 2 diabetes management usually begins with lifestyle modification, glycemic monitoring, and metformin when there are no contraindications. Guidelines commonly describe individualized escalation to GLP-1 receptor agonists, SGLT2 inhibitors, or insulin based on comorbidities, kidney function, cardiovascular risk, and glycemic control.",
+        "Current type 2 diabetes guidelines: Individualized treatment and how to make the most of metformin. Evidence-based guidelines provide the premise for the delivery of quality care to preserve health and prevent disabilities and premature death. The systematic gathering of observational, mechanistic and experimental data contributes to the hierarchy of evidence used to guide clinical practice. In the field of diabetes, metformin was discovered more than 100 years ago, and with 60 years of clinical",
+        "Making treatment guideline recommendations in chronic kidney disease and type 2 diabetes more accessible to primary care providers in the United States. Clinical practice guidelines for the management of chronic kidney disease (CKD) associated with type 2 diabetes (T2D) are designed to assist healthcare professionals with clinical decision making by providing recommendations on the screening, detection, management, and treatment of these conditions. However, primary care practitioners (PCPs) may",
+        "Type 1 diabetes requires insulin replacement therapy rather than oral first-line agents. Guideline-based care typically includes basal-bolus or pump-based insulin delivery, glucose monitoring, hypoglycemia education, and individualized nutrition planning."
+      ],
+      "metrics": [
+        {
+          "name": "Answer Relevance",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        },
+        {
+          "name": "Context Relevance",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        },
+        {
+          "name": "Groundedness",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        }
+      ],
+      "success": false
+    },
+    {
+      "id": "med_002",
+      "query": "What kinds of information do hypertension guidelines usually provide?",
+      "expected_answer": "Hypertension guidelines generally cover diagnosis thresholds, blood pressure targets, medication classes, and follow-up recommendations.",
+      "actual_answer": "Hypertension guidelines generally cover blood pressure thresholds and target ranges, along with guidance on home blood pressure monitoring and lifestyle changes. They also describe medication classes used in treatment, such as ACE inhibitors, ARBs, calcium-channel blockers, and thiazide-type diuretics. Follow-up timing is typically tailored to the severity of hypertension, the presence of symptoms, and how a patient responds to treatment.",
+      "sources": [
+        "Bootstrap: bootstrap_seed",
+        "WHO: WHO_BP.pdf (page 14)",
+        "WHO: WHO_BP.pdf (page 9)",
+        "WHO: WHO_BP.pdf (page 42)",
+        "WHO: WHO_BP.pdf (page 11)",
+        "WHO: WHO_BP.pdf (page 13)",
+        "WHO: WHO_BP.pdf (page 19)",
+        "WHO: WHO_BP.pdf (page 10)"
+      ],
+      "retrieval_context": [
+        "Hypertension guidelines generally cover blood pressure thresholds, target ranges, home blood pressure monitoring, lifestyle changes, and medication classes such as ACE inhibitors, ARBs, calcium-channel blockers, and thiazide-type diuretics. Follow-up cadence depends on severity, symptoms, and treatment response.",
+        "This guideline will replace the guidance in the modules *Evidence-based protocols* and *Risk-based CVD management* of the HEARTS technical package, as well as the guidance in the WHO PEN package regarding the threshold for initiation of treatment, and for the preferred pharmacological treatment for hypertension. The guideline does not address measurement of blood pressure or diagnosis of hypertension. It addresses pharmacotherapy in individuals with a “confirmed” diagnosis of hypertension, such ",
+        "# **Executive summary** More people die each year from cardiovascular diseases than from any other cause. Over three quarters of heart disease and stroke-related deaths occur in low-income and middle-income countries. Hypertension – or elevated blood pressure – is a serious medical condition that significantly increases the risk of heart, brain, kidney and other diseases. Hypertension can be defined using specific systolic and diastolic blood pressure levels or reported use of antihypertensive m",
+        "# **References** (1) Cardiovascular diseases (CVDs). Key facts. 17 May 2017 [website] (https://www.who.int/news-room/fact-sheets/detail/cardiovascular-diseases-(cvds), accessed 31 March 2021). (2) Hypertension. Key facts. 13 September 2019 [website] (https://www.who.int/news-room/fact-sheets/detail/hypertension, accessed 31 March 2021). (3) Prevention of cardiovascular disease: guidelines for assessment and management of total cardiovascular risk. Geneva: World Health Organization; 2007. (4) Hul"
+      ],
+      "metrics": [
+        {
+          "name": "Answer Relevance",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        },
+        {
+          "name": "Context Relevance",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        },
+        {
+          "name": "Groundedness",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        }
+      ],
+      "success": false
+    },
+    {
+      "id": "med_003",
+      "query": "Why should retrieved medical guidance include a disclaimer?",
+      "expected_answer": "Medical RAG systems should clarify that outputs are educational and not a substitute for clinician judgment or personalized care.",
+      "actual_answer": "Retrieved medical guidance should include a disclaimer stating that the information is for educational purposes only and is not a substitute for clinician judgment, diagnosis, or personalized treatment. This matters because it clarifies the limits of the material being presented and encourages users to consult qualified healthcare professionals. (Source: Bootstrap, guideline summary on disclaimers for medical guidance.)",
+      "sources": [
+        "Bootstrap: bootstrap_seed",
+        "WHO: WHO_BP.pdf (page 54)",
+        "WHO: WHO_BP.pdf (page 11)",
+        "WHO: WHO_BP.pdf (page 46)",
+        "WHO: WHO_BP.pdf (page 1)",
+        "WHO: WHO_BP.pdf (page 23)",
+        "WHO: WHO_BP.pdf (page 3)",
+        "WHO: WHO_BP.pdf (page 5)"
+      ],
+      "retrieval_context": [
+        "Medical guidance in retrieval-augmented systems should include a disclaimer that the information is for educational purposes only and is not a substitute for clinician judgment, diagnosis, or personalized treatment. The disclaimer helps users understand the limits of the retrieved material and encourages consultation with qualified healthcare professionals.",
+        "# **Annex 2. Managing declarations of interest and conflicts of interest** The steering group followed the current Compliance, Risk Management and Ethics (CRE) policy. All members of the Guideline Development Group (GDG) were asked to fill in the standard WHO Declaration of Interest (DOI) forms, which were reviewed. The WHO Secretariat reviewed the curriculum vitae of each potential participant and conducted internet searches (PubMed, Open Payments Data, Google Scholar) for information on potent",
+        "<table><tr><td colspan=\"2\">WHO recommends a target systolic blood pressure treatment goal of &#x3C;130 mmHg in patients with hypertension and known cardiovascular disease (CVD).</td></tr><tr><td colspan=\"2\"><strong>Strong recommendation, moderate-certainty evidence</strong></td></tr><tr><td colspan=\"2\">WHO suggests a target systolic blood pressure treatment goal of &#x3C;130 mmHg in high-risk patients with hypertension (those with high CVD risk, diabetes mellitus, chronic kidney disease).</td></",
+        "doi: 10.1016/j.amjcard.2007.03.005. (70) Gwadry-Sridhar FH, Manias E, Lal L, Salas M, Hughes DA, Ratzki-Leewing A, et al. Impact of interventions on medication adherence and blood pressure control in patients with essential hypertension: a systematic review by the ISPOR medication adherence and persistence special interest group. Value Health. 2013;16(5):863-871. doi: 10.1016/j.jval.2013.03.1631. (71) Walker RC, Tong A, Howard K, Palmer SC. Patient expectations and experiences of remote monitori"
+      ],
+      "metrics": [
+        {
+          "name": "Answer Relevance",
+          "score": 0.875,
+          "threshold": 0.7,
+          "success": true,
+          "reason": "The score is 0.88 because the output largely addresses why retrieved medical guidance should include a disclaimer, but it is not higher because it includes a statement naming the source as Bootstrap, which does not answer the question about why a disclaimer is needed.",
+          "error": null
+        },
+        {
+          "name": "Context Relevance",
+          "score": null,
+          "threshold": 0.7,
+          "success": false,
+          "reason": null,
+          "error": "'ThinkingBlock' object has no attribute 'text'"
+        },
+        {
+          "name": "Groundedness",
+          "score": 1.0,
+          "threshold": 0.7,
+          "success": true,
+          "reason": "The score is 1.00 because no contradictions were found, meaning the actual output stays fully aligned with the retrieval context. Great work keeping every claim grounded in the source material!",
+          "error": null
+        }
+      ],
+      "success": false
+    }
+  ]
+}

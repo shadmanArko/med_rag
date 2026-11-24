@@ -1,11 +1,19 @@
 from __future__ import annotations
 
+import logging
 import os
+import xml.etree.ElementTree as ET
 from pathlib import Path
+
+import requests
 
 from llama_index.core.schema import Document
 
 from src.core.base import DocumentIngestor
+
+logger = logging.getLogger(__name__)
+
+EUTILS_BASE = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils"
 
 
 class MedRAGIngestor(DocumentIngestor):
@@ -109,56 +117,54 @@ class MedRAGIngestor(DocumentIngestor):
                 "LLAMA_CLOUD_API_KEY is required to parse guideline PDFs with LlamaParse."
             )
 
-        from llama_parse import LlamaParse
+        from llama_cloud import LlamaCloud
 
-        parser = LlamaParse(
-            api_key=api_key,
-            result_type="markdown",
-            parsing_instruction=(
-                "Clinical guideline or label with evidence tables, dose recommendations, "
-                "warnings, and section hierarchy. Preserve tables and headings."
-            ),
-        )
+        client = LlamaCloud(api_key=api_key)
+        tier = os.getenv("LLAMA_PARSE_TIER", "cost_effective")
 
         documents = []
         for pdf_path in pdf_paths:
-            parsed_docs = parser.load_data(str(pdf_path))
-            for doc in parsed_docs:
-                metadata = dict(getattr(doc, "metadata", {}) or {})
-                metadata.update(
-                    {
-                        "source_file": pdf_path.name,
-                        "parser": "llamaparse",
-                        "source": "guideline_pdf",
-                    }
+            # Raises on failure so a bad parse surfaces as an error instead of an empty index.
+            uploaded = client.files.create(file=pdf_path, purpose="parse")
+            result = client.parsing.parse(
+                tier=tier,
+                version="latest",
+                file_id=uploaded.id,
+                expand=["markdown"],
+                timeout=1800,
+            )
+            pages = result.markdown.pages if result.markdown else []
+            for page in pages:
+                text = getattr(page, "markdown", None)
+                if not getattr(page, "success", True) or not text or not text.strip():
+                    continue
+                documents.append(
+                    Document(
+                        text=text,
+                        metadata={
+                            "source_file": pdf_path.name,
+                            "page": page.page_number,
+                            "parser": "llamaparse_v2",
+                            "source": "guideline_pdf",
+                        },
+                    )
                 )
-                doc.metadata = metadata
-                documents.append(doc)
+            if not any(d.metadata["source_file"] == pdf_path.name for d in documents):
+                raise RuntimeError(f"LlamaParse returned no text for '{pdf_path.name}'.")
         return documents
-
 
     def _load_pubmed_abstracts(self):
         if os.getenv("PUBMED_ENABLED", "true").lower() not in {"1", "true", "yes"}:
             return []
 
-        from llama_index.readers.papers import PubmedReader
-
-        reader = PubmedReader()
-        documents = []
         max_queries = int(os.getenv("PUBMED_QUERY_LIMIT", "1"))
         queries = self.pubmed_queries[:max_queries] if max_queries > 0 else ()
         max_results = int(os.getenv("PUBMED_MAX_RESULTS", str(self.pubmed_max_results)))
 
+        documents = []
         for query in queries:
-            abstracts = reader.load_data(search_query=query, max_results=max_results)
-            for doc in abstracts:
-                metadata = dict(getattr(doc, "metadata", {}) or {})
-                metadata.update({"source": "pubmed", "query": query, "parser": "pubmed_reader"})
-                doc.metadata = metadata
-                documents.append(doc)
+            documents.extend(_fetch_pubmed_documents(query, max_results))
         return documents
-
-    
 
     def _load_bootstrap_documents(self):
         documents = []
@@ -198,3 +204,60 @@ class MedRAGIngestor(DocumentIngestor):
             if keyword in text_hint:
                 return specialty
         return "general_medicine"
+
+
+def _fetch_pubmed_documents(query: str, max_results: int) -> list[Document]:
+    """Search PubMed via NCBI E-utilities and return one Document per abstract."""
+    common = {"tool": "medrag"}
+    try:
+        search = requests.get(
+            f"{EUTILS_BASE}/esearch.fcgi",
+            params={**common, "db": "pubmed", "term": query, "retmax": max_results,
+                    "retmode": "json", "sort": "relevance"},
+            timeout=30,
+        )
+        search.raise_for_status()
+        pmids = search.json().get("esearchresult", {}).get("idlist", [])
+        if not pmids:
+            logger.warning("PubMed returned no results for query %r.", query)
+            return []
+
+        fetch = requests.get(
+            f"{EUTILS_BASE}/efetch.fcgi",
+            params={**common, "db": "pubmed", "id": ",".join(pmids), "retmode": "xml"},
+            timeout=60,
+        )
+        fetch.raise_for_status()
+        root = ET.fromstring(fetch.content)
+    except (requests.RequestException, ET.ParseError, ValueError):
+        logger.exception("PubMed fetch failed for query %r; continuing without it.", query)
+        return []
+
+    documents: list[Document] = []
+    for article in root.findall(".//PubmedArticle"):
+        pmid = (article.findtext(".//MedlineCitation/PMID") or "").strip()
+        title = "".join(article.find(".//ArticleTitle").itertext()).strip() \
+            if article.find(".//ArticleTitle") is not None else ""
+        abstract = " ".join(
+            "".join(part.itertext()).strip() for part in article.findall(".//Abstract/AbstractText")
+        ).strip()
+        if not abstract:
+            continue
+        url = f"https://pubmed.ncbi.nlm.nih.gov/{pmid}/"
+        documents.append(
+            Document(
+                text=f"{title}\n\n{abstract}" if title else abstract,
+                doc_id=f"pubmed-{pmid}",
+                metadata={
+                    "source": "pubmed",
+                    "query": query,
+                    "parser": "pubmed_eutils",
+                    "title": title,
+                    "pmid": pmid,
+                    "URL": url,
+                    "journal": article.findtext(".//Journal/Title") or "",
+                    "year": article.findtext(".//JournalIssue/PubDate/Year") or "",
+                },
+            )
+        )
+    return documents

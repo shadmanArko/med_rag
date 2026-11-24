@@ -43,7 +43,11 @@ def build_index(documents: list[Any], config: ProjectConfig, settings: AppSettin
     from llama_index.core import StorageContext, VectorStoreIndex
     from llama_index.core.node_parser import SentenceSplitter
 
-    vector_store = _build_vector_store(config, settings)
+    # Rebuild from scratch so repeated reindexing doesn't duplicate chunks.
+    client = build_qdrant_client(settings)
+    if client.collection_exists(config.collection_name):
+        client.delete_collection(config.collection_name)
+    vector_store = _build_vector_store(config, settings, client=client)
     storage_context = StorageContext.from_defaults(vector_store=vector_store)
     splitter = SentenceSplitter(
         chunk_size=settings.chunk_size,
