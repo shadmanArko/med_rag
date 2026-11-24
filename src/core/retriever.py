@@ -3,17 +3,30 @@ from __future__ import annotations
 from src.core.base import ProjectConfig
 from src.core.settings import AppSettings
 
-def _build_llm(config: ProjectConfig, settings: AppSettings):
-    from llama_index.llms.openai import OpenAI
 
-    try:
-        return OpenAI(
-            model=settings.openai_model,
-            temperature=0.1,
-            system_prompt=config.system_prompt,
-        )
-    except TypeError:
-        return OpenAI(model=settings.openai_model, temperature=0.1)
+def _build_llm(config: ProjectConfig, settings: AppSettings):
+    from llama_index.core.base.llms.types import LLMMetadata
+    from llama_index.llms.anthropic import Anthropic
+
+    class ClaudeLLM(Anthropic):
+        # llama-index keeps a hard-coded model whitelist; bypass it so newer Claude
+        # model IDs work without waiting for a library release.
+        @property
+        def metadata(self) -> LLMMetadata:
+            return LLMMetadata(
+                context_window=200_000,
+                num_output=self.max_tokens,
+                is_chat_model=True,
+                is_function_calling_model=True,
+                model_name=self.model,
+            )
+
+    return ClaudeLLM(
+        model=settings.anthropic_model,
+        temperature=0.1,
+        max_tokens=1024,
+        system_prompt=config.system_prompt,
+    )
 
 
 def build_query_engine(index, config: ProjectConfig, settings: AppSettings):

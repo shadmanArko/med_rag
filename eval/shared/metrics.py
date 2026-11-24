@@ -13,8 +13,11 @@ def build_rag_metrics():
         FaithfulnessMetric,
     )
 
+    from eval.shared.judge import ClaudeJudge
+
+    judge = ClaudeJudge()
     return [
-        _named(AnswerRelevancyMetric(threshold=0.7), "Answer Relevance"),
-        _named(ContextualRelevancyMetric(threshold=0.7), "Context Relevance"),
-        _named(FaithfulnessMetric(threshold=0.7), "Groundedness"),
+        _named(AnswerRelevancyMetric(threshold=0.7, model=judge), "Answer Relevance"),
+        _named(ContextualRelevancyMetric(threshold=0.7, model=judge), "Context Relevance"),
+        _named(FaithfulnessMetric(threshold=0.7, model=judge), "Groundedness"),
     ]
