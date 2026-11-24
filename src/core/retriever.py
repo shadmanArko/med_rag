@@ -21,9 +21,15 @@ def _build_llm(config: ProjectConfig, settings: AppSettings):
                 model_name=self.model,
             )
 
+        @property
+        def _model_kwargs(self) -> dict:
+            # Newer Claude models reject `temperature`; omit it from requests.
+            kwargs = dict(super()._model_kwargs)
+            kwargs.pop("temperature", None)
+            return kwargs
+
     return ClaudeLLM(
         model=settings.anthropic_model,
-        temperature=0.1,
         max_tokens=1024,
         system_prompt=config.system_prompt,
     )

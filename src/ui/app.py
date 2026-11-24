@@ -220,6 +220,8 @@ with query_tab:
     if st.button("Ask", type="primary"):
         if not question.strip():
             st.warning("Enter a question first.")
+        elif len(question.strip()) < 5:
+            st.warning("Please enter a full question (at least 5 characters).")
         else:
             try:
                 with st.spinner("Searching the knowledge base and drafting an answer..."):
@@ -251,7 +253,13 @@ with query_tab:
                     st.caption(f"Confidence: {data['confidence']}")
                     st.info(data["disclaimer"])
                 else:
-                    st.error(response.text)
+                    try:
+                        detail = response.json().get("detail", response.text)
+                        if isinstance(detail, list):
+                            detail = "; ".join(item.get("msg", str(item)) for item in detail)
+                    except ValueError:
+                        detail = response.text
+                    st.error(f"Query failed: {detail}")
 
 with sources_tab:
     st.caption(
